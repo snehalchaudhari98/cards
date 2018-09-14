@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/card_margin"
+        android:elevation="3dp"
+        card_view:cardCornerRadius="@dimen/card_album_radius">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/start"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/album_title_padding"
+                android:paddingRight="@dimen/album_title_padding"
+                android:paddingTop="@dimen/album_title_padding"
+                android:textColor="@color/album_title"
+                android:textSize="@dimen/album_title"
+                />
+
+            <ImageView
+                android:id="@+id/thumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/album_cover_height"
+                android:layout_below="@id/start"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/crop1" />
+
+
+            <RelativeLayout
+                android:id="@+id/rrr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/thumbnail"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="125dp"
+                    android:layout_height="47dp"
+                    android:layout_alignParentLeft="true"
+                    android:background="@color/blue"
+                    android:layout_alignParentTop="true"
+                    android:text="TextView"
+                    android:alpha="0.6"
+                    android:textColor="@color/viewBg"
+                    android:textSize="19dp"/>
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="125dp"
+                    android:layout_height="47dp"
+                    android:layout_alignParentTop="true"
+                    android:background="@color/yellow"
+                    android:layout_toLeftOf="@+id/textView3"
+                    android:text="TextView"
+                    android:alpha="0.6"
+                    android:textColor="@color/viewBg"
+                    android:textSize="19dp"/>
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="125dp"
+                    android:layout_height="47dp"
+                    android:background="@color/red"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:textColor="@color/viewBg"
+                    android:textSize="19dp"
+                    android:text="TextView"
+                    android:alpha="0.6"/>
+
+
+            </RelativeLayout>
+
+            <!--   <TextView
+                    android:id="@+id/ooo"
+                    android:layout_width="match_parent"
+                    android:layout_height="81dp"
+                    android:layout_below="@id/thumbnail"
+                    android:paddingLeft="@dimen/album_title_padding"
+                    android:paddingRight="@dimen/album_title_padding"
+                    android:paddingTop="@dimen/album_title_padding"
+                    android:textColor="@color/album_title"
+                    android:textSize="@dimen/album_title" />
+-->
+                <ImageView
+                    android:id="@+id/overflow"
+                    android:layout_width="@dimen/ic_album_overflow_width"
+                    android:layout_height="@dimen/ic_album_overflow_height"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@id/rrr"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_action_name" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+
+
+</LinearLayout>
