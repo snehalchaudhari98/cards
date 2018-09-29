@@ -9,8 +9,10 @@
         android:roundIcon="@mipmap/ic_logo2_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <!--<activity android:name=".SplashScreen">-->
-        <activity android:name=".BottomNavActivity">
+       <!-- <activity android:name=".SplashScreen">-->
+
+           <activity android:name=".BottomNavActivity">
+          <!--  <activity android:name=".NewInflaterActivity">-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,7 +27,9 @@
         <activity android:name=".CropEntry" />
        <!-- <activity
             android:name=".BottomNavActivity"
-            android:label="@string/title_activity_bottom_nav"></activity>-->
+            android:label="@string/title_activity_bottom_nav" />-->
+       <!-- <activity android:name=".NewInflaterActivity" />-->
+        <activity android:name=".viewall"></activity>
     </application>
 
 </manifest>

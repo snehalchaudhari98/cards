@@ -2,11 +2,8 @@ package com.example.snehal.cards;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.GridLayout;
 
@@ -28,7 +25,7 @@ public class gridview extends AppCompatActivity {
 
 
 
-        BottomNavigationView bottomNavigationView=(BottomNavigationView)findViewById(R.id.bottom_nevigation);
+        /*BottomNavigationView bottomNavigationView=(BottomNavigationView)findViewById(R.id.bottom_nevigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -36,26 +33,32 @@ public class gridview extends AppCompatActivity {
                     case R.id.action_add:
                         //Toast.makeText(ScrollingActivity.this,"Added!! Yeppie",Toast.LENGTH_SHORT).show();
                         Intent intent=new Intent(gridview.this,gridview.class);
+                        finish();
                         startActivity(intent);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         break;
                     case R.id.action_chart:
                         //Toast.makeText(ScrollingActivity.this,"Showing all Details here!!",Toast.LENGTH_SHORT).show();
                         Intent intent1=new Intent(gridview.this,MainActivity.class);
+                        finish();
                         startActivity(intent1);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         break;
                     case R.id.action_profile:
                         //Toast.makeText(ScrollingActivity.this,"Your Profile",Toast.LENGTH_SHORT).show();
                         Intent intent2=new Intent(gridview.this,MainActivity.class);
+                        finish();
                         startActivity(intent2);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         break;
                   /*  case R.id.action_help:
                         Toast.makeText(ScrollingActivity.this,"Google it ",Toast.LENGTH_SHORT).show();
                         break;*/
 
-                }
+               /* }
                 return true;
             }
-        });
+        });*/
 
     }
 
@@ -70,11 +73,18 @@ public class gridview extends AppCompatActivity {
                 public void onClick(View v) {
                  //   Toast.makeText(gridview.this,"you just added ::"+a,Toast.LENGTH_SHORT).show();
                     Intent intent=new Intent(gridview.this,CropEntry.class);
+                    finish();
                     startActivity(intent);
 
                 }
             });
 
         }
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 }

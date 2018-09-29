@@ -4,11 +4,13 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="viewBg">#f1f5f8</color>
+    <color name="lightgray">#a6abae</color>
     <color name="faint">#f5f4f9</color>
     <color name="album_title">#ecebf3 </color>
     <color name="blue">  #2604fa</color>
     <color name="yellow"> #fcf508 </color>
     <color name="red"> #fc2d08 </color>
     <color name="green"> #5ce939</color>
+    <color name="black"> #000000</color>
 
 </resources>

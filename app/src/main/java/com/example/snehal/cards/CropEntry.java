@@ -1,17 +1,27 @@
 package com.example.snehal.cards;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import java.util.Calendar;
 
 public class CropEntry extends AppCompatActivity {
 
     DatabaseHelper myDb;
     EditText sugarcaneSowingDate,sugarcaneSowingArea;
-    Button sugarcaneEnter;
+    Button sugarcaneEnter,btnviewAll;
+
+    private DatePickerDialog.OnDateSetListener mDateSetListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +32,7 @@ public class CropEntry extends AppCompatActivity {
         sugarcaneSowingDate = (EditText)findViewById(R.id.sugarcanesowingdate);
         sugarcaneSowingArea = (EditText)findViewById(R.id.suagarcanesowingarea);
         sugarcaneEnter = (Button)findViewById(R.id.sugarcanesowingenter);
+        btnviewAll = (Button) findViewById(R.id.button_viewAll);
 
 
         /*BottomNavigationView bottomNavigationView=(BottomNavigationView)findViewById(R.id.bottom_nevigation);
@@ -54,6 +65,32 @@ public class CropEntry extends AppCompatActivity {
         });*/
 
         AddData();
+        viewAll();
+        sugarcaneSowingDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar c=Calendar.getInstance();
+                int month=c.get(Calendar.MONTH);
+                int day=c.get(Calendar.DAY_OF_MONTH);
+                int year=c.get(Calendar.YEAR);
+
+                DatePickerDialog dialog=new DatePickerDialog(CropEntry.this,android.R.style.Theme_Holo_Light_Dialog_MinWidth,mDateSetListener,year,month,day);
+                dialog.getDatePicker().setMinDate(System.currentTimeMillis()-1000);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+
+            }
+        });
+        mDateSetListener=new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                month=month+1;
+                String date=dayOfMonth+"/"+month+"/"+year;
+                sugarcaneSowingDate.setText(date);
+            }
+        };
+
+
     }
 
 
@@ -62,16 +99,102 @@ public class CropEntry extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        /*Calendar calendar =Calendar.getInstance();
+                        calendar.set(Calendar.HOUR_OF_DAY,19);
+                        calendar.set(Calendar.MINUTE,24);
+                        calendar.set(Calendar.SECOND,30);
+
+
+                        Intent intent=new Intent(getApplicationContext(),Notification_receiver.class);
+                        PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),100,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+
+                        AlarmManager alarmManager=(AlarmManager)getSystemService(ALARM_SERVICE);
+                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pendingIntent);*/
+
                         boolean isInserted = myDb.insertData(sugarcaneSowingDate.getText().toString(),sugarcaneSowingArea.getText().toString());
+                        sugarcaneSowingArea.setText("");
+                        sugarcaneSowingDate.setText("");
                         if(isInserted ==true)
-                            Toast.makeText(CropEntry.this,"Data Inserted",Toast.LENGTH_LONG).show();
-                        else
-                            Toast.makeText(CropEntry.this,"Data not Inserted",Toast.LENGTH_LONG).show();
+                        {
+                            Toast.makeText(CropEntry.this, "Data  Inserted", Toast.LENGTH_LONG).show();
+                            /*Cursor res = myDb.getAllData();
+                            if (res.getCount() == 0) {
+                                // show message
+                                showMessage("Error", "Nothing found");
+                                return;
+                            }
+
+                            StringBuffer buffer = new StringBuffer();
+                            while (res.moveToNext()) {
+                                buffer.append("SugarcaneDate :" + res.getString(0) + "\n");
+                                buffer.append("SugarcaneArea :" + res.getString(1) + "\n\n\n");
+                            }
+
+                            // Show all data
+                            showMessage("Data", buffer.toString());
+
+                            Calendar calendar =Calendar.getInstance();
+                            calendar.set(Calendar.HOUR_OF_DAY,1);
+                            calendar.set(Calendar.MINUTE,10);
+                            calendar.set(Calendar.SECOND,30);
+
+
+                            Intent intent=new Intent(getApplicationContext(),Notification_receiver.class);
+                            PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),100,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+
+                            AlarmManager alarmManager=(AlarmManager)getSystemService(ALARM_SERVICE);
+                            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pendingIntent);*/
+
+                        }
+                        else {
+                            Toast.makeText(CropEntry.this, "Oopps!!Data not Inserted", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
         );
     }
 
+    public void viewAll() {
+        btnviewAll.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        /*Cursor res = myDb.getAllData();
+                        if(res.getCount() == 0) {
+                            // show message
+                            showMessage("Error","Nothing found");
+                            return;
+                        }
+
+                        StringBuffer buffer = new StringBuffer();
+                        while (res.moveToNext()) {
+                            buffer.append("SugarcaneDate :"+ res.getString(0)+"\n");
+                            buffer.append("SugarcaneArea :"+ res.getString(1)+"\n\n\n");
+                             }
+
+                        // Show all data
+                        showMessage("Data",buffer.toString());*/
+                        Intent intent = new Intent(CropEntry.this,viewall.class);
+                        startActivity(intent);
+                    }
+                }
+        );
+    }
+
+    public void showMessage(String title,String Message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(Message);
+        builder.show();
+    }
+
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
 }
 
 

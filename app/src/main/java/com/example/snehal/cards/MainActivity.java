@@ -15,7 +15,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {RecyclerView recyclerView;
+public class MainActivity extends AppCompatActivity {
+    RecyclerView recyclerView;
 productadapter adapter;
 List<product> productList;
 
@@ -40,17 +41,23 @@ List<product> productList;
                     case R.id.action_add:
                         //Toast.makeText(ScrollingActivity.this,"Added!! Yeppie",Toast.LENGTH_SHORT).show();
                         Intent intent=new Intent(MainActivity.this,gridview.class);
+                        finish();
                         startActivity(intent);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         break;
                     case R.id.action_chart:
                         //Toast.makeText(ScrollingActivity.this,"Showing all Details here!!",Toast.LENGTH_SHORT).show();
                         Intent intent1=new Intent(MainActivity.this,MainActivity.class);
+                        finish();
                         startActivity(intent1);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         break;
                     case R.id.action_profile:
                         //Toast.makeText(ScrollingActivity.this,"Your Profile",Toast.LENGTH_SHORT).show();
                         Intent intent2=new Intent(MainActivity.this,MainActivity.class);
+                        finish();
                         startActivity(intent2);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         break;
                   /*  case R.id.action_help:
                         Toast.makeText(ScrollingActivity.this,"Google it ",Toast.LENGTH_SHORT).show();
@@ -95,7 +102,9 @@ List<product> productList;
                 Toast.makeText(MainActivity.this,"Going to next page",Toast.LENGTH_SHORT).show();
 
                 Intent intent=new Intent(MainActivity.this,gridview.class);
+                //finish();
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
             }
         });
