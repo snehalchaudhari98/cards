@@ -54,6 +54,7 @@ public class viewall extends AppCompatActivity {
                 datamodel=  database.getdata();
                 Log.d("size of fetched data", String.valueOf(datamodel.size()));
 
+                DataModel tem = null;
 
               //  Calendar p3 = Calendar.getInstance();
                 Calendar p2 = Calendar.getInstance();
@@ -103,10 +104,24 @@ public class viewall extends AppCompatActivity {
                     c = myDbHelper.query("SugarCane", null, null, null, null, null, null);
                     if (c.moveToFirst()) {
                         do {
+                            int addDeadline=0;
                             Log.i("LISTDATA", "_id: " + c.getString(0) + "\n" +
                                     "crop " + c.getString(1) + "\n" );
 
-                            if(noOfDays < c.getInt(0)){
+                            if(noOfDays < c.getInt(0)) {
+                            tem=i;
+
+                            }else{
+
+                                addDeadline=  c.getInt(0)-(int)noOfDays;
+                                try {
+                                    tem.setDeadlinedate(addDeadline);
+
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+
+                                }
+
                                 requiredData.add(i);
                                 break;
                             }
@@ -238,3 +253,88 @@ public class viewall extends AppCompatActivity {
 //
 //    }
 //}
+/*
+
+  public String getDeadlinedate() throws ParseException {
+        Cursor p=null;
+
+        String oldDate = getSuargardate();
+        System.out.println(oldDate);
+        //Specifying date format that matches the given date
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+        Calendar c = Calendar.getInstance();
+        //c.setTime(sdf.parse(oldDate));
+        try{
+            //Setting the date to the given date
+
+            c.setTime(sdf.parse(oldDate));
+            System.out.println(c.getTime());
+
+        }catch(ParseException e){
+            e.printStackTrace();
+        }
+
+
+        Calendar p1 =Calendar.getInstance();
+
+
+        try {
+            p1.setTime(sdf.parse(String.valueOf(Calendar.getInstance().getTime())));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Log.i("today", "" + p1);
+
+
+        int addDeadline=0;
+        long noOfDays=0;
+        long m1=p1.getTimeInMillis();
+        long m2=c.getTimeInMillis();
+
+        noOfDays=(m1-m2)/(24 * 60 * 60000);
+        Log.d("Date difference", String.valueOf(noOfDays));
+
+
+
+
+        //Number of Days to add
+        //c.add(Calendar.DAY_OF_MONTH, 30);
+
+        DataBaseHelper2 myDbHelper = new DataBaseHelper2(context);
+
+        try {
+            myDbHelper.createDataBase();
+        } catch (IOException ioe) {
+            throw new Error("Unable to create database");
+        }
+        myDbHelper.openDataBase();
+       // Toast.makeText(viewall.this, "Successfully Imported", Toast.LENGTH_SHORT).show();
+        p = myDbHelper.query("SugarCane", null, null, null, null, null, null);
+        if (p.moveToFirst()) {
+            do {
+
+                if(noOfDays < p.getInt(0)){
+                  continue;
+                }else{
+
+                    addDeadline= (int)noOfDays - p.getInt(0);
+                    break;
+                }
+
+            } while (p.moveToNext());
+
+            c.add(Calendar.DAY_OF_MONTH, addDeadline);
+            deadlinedate = sdf.format(c.getTime());
+
+        }
+
+
+
+
+        //Date after adding the days to the given date
+
+        return deadlinedate;
+        //Displaying the new Date after addition of Daysreturn deadlinedate;
+    }
+ */
