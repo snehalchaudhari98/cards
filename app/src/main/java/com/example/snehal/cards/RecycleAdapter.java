@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -46,11 +45,7 @@ class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.Myholder> {
         DataModel dataModel=dataModelArrayList.get(position);
         holder.SSArea.setText(dataModel.getSuagarArea());
         holder.SSDate.setText(dataModel.getSuargardate());
-        try {
-            holder.SSDeadline.setText(dataModel.getDeadlinedate());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        holder.SSDeadline.setText(dataModel.getDeadlinedate());
 
 
     }

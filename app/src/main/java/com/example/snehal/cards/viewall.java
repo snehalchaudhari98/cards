@@ -18,10 +18,6 @@ import java.util.Calendar;
 import java.util.List;
 
 
-
-
-
-
 public class viewall extends AppCompatActivity {
 
 
@@ -105,24 +101,28 @@ public class viewall extends AppCompatActivity {
                     if (c.moveToFirst()) {
                         do {
                             int addDeadline=0;
-                            Log.i("LISTDATA", "_id: " + c.getString(0) + "\n" +
-                                    "crop " + c.getString(1) + "\n" );
+                            Log.i("LISTDATA", "Diff" + c.getString(0) + "\n" +
+                                    "no_of_days_real " + noOfDays + "\n" );
 
-                            if(noOfDays < c.getInt(0)) {
-                            tem=i;
+                            if(noOfDays > c.getInt(0)) {
+                                continue;
 
                             }else{
 
-                                addDeadline=  c.getInt(0)-(int)noOfDays;
+                              //  addDeadline=  c.getInt(0);
+                                addDeadline=  c.getInt(0) - (int)noOfDays;
+
                                 try {
-                                    tem.setDeadlinedate(addDeadline);
+                                    i.setDeadlinedate(addDeadline);
 
                                 } catch (ParseException e) {
                                     e.printStackTrace();
 
                                 }
 
+                                Log.i("CheckDeadlineSet::", i.getDeadlinedate());
                                 requiredData.add(i);
+
                                 break;
                             }
 
