@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
 productadapter adapter;
 List<product> productList;
-
+   
 //GridLayout maingrid;
 
     Button next;
@@ -108,6 +108,8 @@ List<product> productList;
 
             }
         });
+
+
 
     }
 

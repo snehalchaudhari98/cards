@@ -1,11 +1,15 @@
 package com.example.snehal.cards;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +21,7 @@ import java.util.Calendar;
 
 public class CropEntry extends AppCompatActivity {
 
+    private NotificationUtil mNotificationUtils;
     DatabaseHelper myDb;
     EditText sugarcaneSowingDate,sugarcaneSowingArea;
     Button sugarcaneEnter,btnviewAll;
@@ -91,12 +96,16 @@ public class CropEntry extends AppCompatActivity {
         };
 
 
-    }
+   }
+
+
+
 
 
     public  void AddData() {
         sugarcaneEnter.setOnClickListener(
                 new View.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                     @Override
                     public void onClick(View v) {
                         /*Calendar calendar =Calendar.getInstance();
@@ -145,14 +154,40 @@ public class CropEntry extends AppCompatActivity {
                             AlarmManager alarmManager=(AlarmManager)getSystemService(ALARM_SERVICE);
                             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pendingIntent);*/
 
+
+
+                           /* mNotificationUtils = new NotificationUtil(getApplicationContext());
+
+                                        Notification.Builder nb = mNotificationUtils.
+                                                getAndroidChannelNotification("HIIII Farmer", "Time for next dose");
+                                        mNotificationUtils.getManager().notify(101, nb.build());*/
+
+                            Calendar calendar =Calendar.getInstance();
+//                            calendar.set(Calendar.HOUR_OF_DAY,23);
+//                            calendar.set(Calendar.MINUTE,57);
+//                            calendar.set(Calendar.SECOND,10);
+
+
+                            Intent intent=new Intent(getApplicationContext(),NotificationUtil.class);
+                            PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),100,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+
+                            AlarmManager alarmManager=(AlarmManager)getSystemService(ALARM_SERVICE);
+                            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_FIFTEEN_MINUTES,pendingIntent);
+
+
+
                         }
+
+
                         else {
                             Toast.makeText(CropEntry.this, "Oopps!!Data not Inserted", Toast.LENGTH_LONG).show();
                         }
+
                     }
                 }
         );
     }
+
 
     public void viewAll() {
         btnviewAll.setOnClickListener(
