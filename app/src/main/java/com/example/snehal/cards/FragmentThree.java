@@ -3,20 +3,13 @@ package com.example.snehal.cards;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Toast;
-
-import java.util.Calendar;
 
 
 /**
@@ -45,7 +38,7 @@ public class FragmentThree extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        View view =inflater.inflate(R.layout.fragment_fragment_two,container,false);
+       /* View view =inflater.inflate(R.layout.fragment_fragment_two,container,false);
 
         myDb = new DatabaseHelper(getContext());
 
@@ -110,7 +103,7 @@ public class FragmentThree extends Fragment {
                 String date=dayOfMonth+"/"+month+"/"+year;
                 sugarcaneSowingDate.setText(date);
             }
-        };
+        };*/
 
 
 

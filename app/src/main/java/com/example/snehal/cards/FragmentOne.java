@@ -32,12 +32,11 @@ public class FragmentOne extends Fragment {
 
        // maingrid=(GridLayout)findViewById(R.id.maingrid);
 
-        View view =inflater.inflate(R.layout.fragment_fragment_one,container,false);
+       View view =inflater.inflate(R.layout.fragment_fragment_one,container,false);
         maingrid=(GridLayout)view.findViewById(R.id.maingrid);
-
         setsingleEvent(maingrid);
 
-        return inflater.inflate(R.layout.fragment_fragment_one, container, false);
+        return view;
     }
 
 

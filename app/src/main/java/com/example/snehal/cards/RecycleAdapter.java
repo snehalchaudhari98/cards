@@ -59,4 +59,5 @@ class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.Myholder> {
     public int getItemCount() {
         return dataModelArrayList.size();
     }
+
 }
