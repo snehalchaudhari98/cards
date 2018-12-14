@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -31,6 +30,7 @@ public class viewall extends AppCompatActivity {
     DatabaseHelper database;
     RecyclerView recyclerView;
     RecycleAdapter recycler;
+    List<DataModel> requiredData;
     List<DataModel> datamodel;
 
 
@@ -41,6 +41,7 @@ public class viewall extends AppCompatActivity {
 
         show = (Button) findViewById(R.id.view);
         datamodel =new ArrayList<DataModel>();
+        requiredData =new ArrayList<DataModel>();
         recyclerView = (RecyclerView) findViewById(R.id.recycle);
 
 
@@ -51,11 +52,77 @@ public class viewall extends AppCompatActivity {
             public void onClick(View v) {
                 database = new DatabaseHelper(viewall.this);
                 datamodel=  database.getdata();
+                Log.d("size of fetched data", String.valueOf(datamodel.size()));
 
-                Log.i("Aray list",datamodel.toString());
+
+              //  Calendar p3 = Calendar.getInstance();
+                Calendar p2 = Calendar.getInstance();
+                Calendar p1 =Calendar.getInstance();
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+                try {
+                  p1.setTime(sdf.parse(String.valueOf(Calendar.getInstance().getTime())));
+//                    p3.set(Calendar.HOUR_OF_DAY,0);
+//                    p3.set(Calendar.MINUTE,0);
+//                    p3.set(Calendar.SECOND,0);
+//                    p1.setTime(sdf.parse(String.valueOf(p3)));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Log.i("today", "" + p1);
+
+                long noOfDays=0;
+              //  Log.i("Aray list",datamodel.toString());
+
+                for(DataModel i:datamodel){
+                    Log.i("in list 99", "" + i.getSuargardate());
+
+                    try {
+                        p2.setTime(sdf.parse(i.getSuargardate()));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    long m1=p1.getTimeInMillis();
+                    long m2=p2.getTimeInMillis();
+
+                    noOfDays=(m1-m2)/(24 * 60 * 60000);
+                    Log.d("Date difference", String.valueOf(noOfDays));
 
 
-                Calendar p = Calendar.getInstance();
+
+                    DataBaseHelper2 myDbHelper = new DataBaseHelper2(viewall.this);
+                    try {
+                        myDbHelper.createDataBase();
+                    } catch (IOException ioe) {
+                        throw new Error("Unable to create database");
+                    }
+                    myDbHelper.openDataBase();
+//                    Toast.makeText(viewall.this, "Successfully Imported", Toast.LENGTH_SHORT).show();
+
+                    c = myDbHelper.query("SugarCane", null, null, null, null, null, null);
+                    if (c.moveToFirst()) {
+                        do {
+                            Log.i("LISTDATA", "_id: " + c.getString(0) + "\n" +
+                                    "crop " + c.getString(1) + "\n" );
+
+                            if(noOfDays < c.getInt(0)){
+                                requiredData.add(i);
+                                break;
+                            }
+
+
+                        } while (c.moveToNext());
+
+
+                    }
+                }
+
+
+
+
+
+               /* Calendar p = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
                 try {
@@ -83,6 +150,7 @@ public class viewall extends AppCompatActivity {
 
                     Log.i("date difference", "" +noOfDays);
 
+
                 }
 
 
@@ -102,11 +170,11 @@ public class viewall extends AppCompatActivity {
                                 "crop " + c.getString(1) + "\n" );
                     } while (c.moveToNext());
                 }
+                */
 
 
 
-
-                recycler =new RecycleAdapter(datamodel);
+                recycler =new RecycleAdapter(requiredData);
 
 
                 RecyclerView.LayoutManager reLayoutManager =new LinearLayoutManager(getApplicationContext());

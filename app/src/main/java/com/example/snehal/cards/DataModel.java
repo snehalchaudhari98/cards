@@ -30,6 +30,12 @@ public class DataModel {
         }
 
         //Number of Days to add
+
+
+
+
+
+
         c.add(Calendar.DAY_OF_MONTH, 30);
         //Date after adding the days to the given date
         String deadlinedate = sdf.format(c.getTime());

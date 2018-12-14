@@ -75,7 +75,7 @@ public class CropEntry extends AppCompatActivity {
                 int year=c.get(Calendar.YEAR);
 
                 DatePickerDialog dialog=new DatePickerDialog(CropEntry.this,android.R.style.Theme_Holo_Light_Dialog_MinWidth,mDateSetListener,year,month,day);
-                dialog.getDatePicker().setMinDate(System.currentTimeMillis()-1000);
+                dialog.getDatePicker().setMaxDate(System.currentTimeMillis()+1000);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.show();
 
