@@ -1,9 +1,8 @@
 package com.example.snehal.cards;
 
-import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.PendingIntent;
+import android.app.Notification;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -156,16 +155,17 @@ public class CropEntry extends AppCompatActivity {
 
 
 
-                           /* mNotificationUtils = new NotificationUtil(getApplicationContext());
+                           mNotificationUtils = new NotificationUtil(getApplicationContext());
 
                                         Notification.Builder nb = mNotificationUtils.
                                                 getAndroidChannelNotification("HIIII Farmer", "Time for next dose");
-                                        mNotificationUtils.getManager().notify(101, nb.build());*/
+                                        mNotificationUtils.getManager().notify(101, nb.build());
 
-                            Calendar calendar =Calendar.getInstance();
-//                            calendar.set(Calendar.HOUR_OF_DAY,23);
-//                            calendar.set(Calendar.MINUTE,57);
-//                            calendar.set(Calendar.SECOND,10);
+
+                         /*   Calendar calendar =Calendar.getInstance();
+                            calendar.set(Calendar.HOUR_OF_DAY,01);
+                            calendar.set(Calendar.MINUTE,9);
+                            calendar.set(Calendar.SECOND,10);
 
 
                             Intent intent=new Intent(getApplicationContext(),NotificationUtil.class);
@@ -173,12 +173,10 @@ public class CropEntry extends AppCompatActivity {
 
                             AlarmManager alarmManager=(AlarmManager)getSystemService(ALARM_SERVICE);
                             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_FIFTEEN_MINUTES,pendingIntent);
-
+*/
 
 
                         }
-
-
                         else {
                             Toast.makeText(CropEntry.this, "Oopps!!Data not Inserted", Toast.LENGTH_LONG).show();
                         }
