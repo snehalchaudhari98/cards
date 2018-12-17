@@ -1,8 +1,9 @@
 package com.example.snehal.cards;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -85,6 +86,7 @@ public class CropEntry extends AppCompatActivity {
 
             }
         });
+
         mDateSetListener=new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -107,6 +109,7 @@ public class CropEntry extends AppCompatActivity {
                     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                     @Override
                     public void onClick(View v) {
+
                         /*Calendar calendar =Calendar.getInstance();
                         calendar.set(Calendar.HOUR_OF_DAY,19);
                         calendar.set(Calendar.MINUTE,24);
@@ -122,9 +125,12 @@ public class CropEntry extends AppCompatActivity {
                         boolean isInserted = myDb.insertData(sugarcaneSowingDate.getText().toString(),sugarcaneSowingArea.getText().toString());
                         sugarcaneSowingArea.setText("");
                         sugarcaneSowingDate.setText("");
+
+
+
                         if(isInserted ==true)
                         {
-                            Toast.makeText(CropEntry.this, "Data  Inserted", Toast.LENGTH_LONG).show();
+                            Toast.makeText(CropEntry.this, "Data Inserted", Toast.LENGTH_LONG).show();
                             /*Cursor res = myDb.getAllData();
                             if (res.getCount() == 0) {
                                 // show message
@@ -155,14 +161,20 @@ public class CropEntry extends AppCompatActivity {
 
 
 
+//WORKING CODE FOR MOTIFICATION
+/*
                            mNotificationUtils = new NotificationUtil(getApplicationContext());
 
                                         Notification.Builder nb = mNotificationUtils.
                                                 getAndroidChannelNotification("HIIII Farmer", "Time for next dose");
+
                                         mNotificationUtils.getManager().notify(101, nb.build());
 
+                                        */
 
-                         /*   Calendar calendar =Calendar.getInstance();
+
+
+                            Calendar calendar =Calendar.getInstance();
                             calendar.set(Calendar.HOUR_OF_DAY,01);
                             calendar.set(Calendar.MINUTE,9);
                             calendar.set(Calendar.SECOND,10);
@@ -173,9 +185,21 @@ public class CropEntry extends AppCompatActivity {
 
                             AlarmManager alarmManager=(AlarmManager)getSystemService(ALARM_SERVICE);
                             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_FIFTEEN_MINUTES,pendingIntent);
+
+
+/*
+                            Calendar calendar =Calendar.getInstance();
+                            calendar.set(Calendar.HOUR_OF_DAY,11);
+                            calendar.set(Calendar.MINUTE,55);
+                            calendar.set(Calendar.SECOND,10);
+
+
+                            Intent intent = new Intent(getApplicationContext(),Notification_receiver.class);
+                            PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+                            AlarmManager am=(AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+                            am.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_FIFTEEN_MINUTES,pendingIntent);
+
 */
-
-
                         }
                         else {
                             Toast.makeText(CropEntry.this, "Oopps!!Data not Inserted", Toast.LENGTH_LONG).show();
