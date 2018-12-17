@@ -32,7 +32,10 @@
        <!-- <activity android:name=".NewInflaterActivity" />-->
         <activity android:name=".viewall"></activity>
 
-<receiver android:name=".Notification_receiver"/>
+        <receiver
+            android:name=".AlarmReceiver"
+            android:enabled="true"
+            android:exported="false"/>
     </application>
 
 </manifest>

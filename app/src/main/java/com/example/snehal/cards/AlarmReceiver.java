@@ -37,12 +37,8 @@ public class AlarmReceiver extends BroadcastReceiver {
     private static final String PRIMARY_CHANNEL_ID =
             "primary_notification_channel";
 
-    /**
-     * Called when the BroadcastReceiver receives an Intent broadcast.
-     *
-     * @param context The Context in which the receiver is running.
-     * @param intent The Intent being received.
-     */
+
+
     @Override
     public void onReceive(Context context, Intent intent) {
         mNotificationManager = (NotificationManager)
@@ -52,11 +48,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         deliverNotification(context);
     }
 
-    /**
-     * Builds and delivers the notification.
-     *
-     * @param context, activity context.
-     */
+
+
     private void deliverNotification(Context context) {
         // Create the content intent for the notification, which launches
         // this activity
@@ -65,6 +58,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         PendingIntent contentPendingIntent = PendingIntent.getActivity
                 (context, NOTIFICATION_ID, contentIntent, PendingIntent
                         .FLAG_UPDATE_CURRENT);
+
         // Build the notification
 
         String[] quotes={"Pad le beta","Soo mattt , Uth First lecture ko jaa !!!","Get over those Koren Guys !!"," Don't Stalk Your Juniors : )","Koi Baat nahi Madhura ..."};

@@ -3,12 +3,15 @@ package com.example.snehal.cards;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -25,6 +28,12 @@ public class CropEntry extends AppCompatActivity {
     DatabaseHelper myDb;
     EditText sugarcaneSowingDate,sugarcaneSowingArea;
     Button sugarcaneEnter,btnviewAll;
+
+    private static final int NOTIFICATION_ID = 0;
+    // Notification channel ID.
+    private static final String PRIMARY_CHANNEL_ID =
+            "primary_notification_channel";
+    private NotificationManager mNotificationManager;
 
     private DatePickerDialog.OnDateSetListener mDateSetListener;
 
@@ -122,6 +131,9 @@ public class CropEntry extends AppCompatActivity {
                         AlarmManager alarmManager=(AlarmManager)getSystemService(ALARM_SERVICE);
                         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pendingIntent);*/
 
+
+
+
                         boolean isInserted = myDb.insertData(sugarcaneSowingDate.getText().toString(),sugarcaneSowingArea.getText().toString());
                         sugarcaneSowingArea.setText("");
                         sugarcaneSowingDate.setText("");
@@ -131,6 +143,46 @@ public class CropEntry extends AppCompatActivity {
                         if(isInserted ==true)
                         {
                             Toast.makeText(CropEntry.this, "Data Inserted", Toast.LENGTH_LONG).show();
+
+
+                            mNotificationManager = (NotificationManager)
+                                    getSystemService(NOTIFICATION_SERVICE);
+
+                            //ToggleButton alarmToggle = findViewById(R.id.alarmToggle);
+
+                            // Set up the Notification Broadcast Intent.
+                            Intent notifyIntent = new Intent(CropEntry.this, AlarmReceiver.class);
+
+                            boolean alarmUp = (PendingIntent.getBroadcast(CropEntry.this, NOTIFICATION_ID,
+                                    notifyIntent, PendingIntent.FLAG_NO_CREATE) != null);
+
+                            //alarmToggle.setChecked(alarmUp);
+
+                            final PendingIntent notifyPendingIntent = PendingIntent.getBroadcast
+                                    (CropEntry.this, NOTIFICATION_ID, notifyIntent,
+                                            PendingIntent.FLAG_UPDATE_CURRENT);
+
+                            final AlarmManager alarmManager = (AlarmManager) getSystemService
+                                    (ALARM_SERVICE);
+
+                            // Set the click listener for the toggle button.
+                                               // long repeatInterval = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
+                                                long repeatInterval = 60*1000*4;
+
+                                                long triggerTime = SystemClock.elapsedRealtime()
+                                                        + repeatInterval;
+
+                                                // If the Toggle is turned on, set the repeating alarm with
+                                                // a 15 minute interval.
+                                                if (alarmManager != null) {
+                                                    alarmManager.setInexactRepeating
+                                                            (AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                                                                    triggerTime, repeatInterval,
+                                                                    notifyPendingIntent);
+                                                }
+                                      createNotificationChannel();
+
+
                             /*Cursor res = myDb.getAllData();
                             if (res.getCount() == 0) {
                                 // show message
@@ -174,18 +226,6 @@ public class CropEntry extends AppCompatActivity {
 
 
 
-                            Calendar calendar =Calendar.getInstance();
-                            calendar.set(Calendar.HOUR_OF_DAY,01);
-                            calendar.set(Calendar.MINUTE,9);
-                            calendar.set(Calendar.SECOND,10);
-
-
-                            Intent intent=new Intent(getApplicationContext(),NotificationUtil.class);
-                            PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),100,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-
-                            AlarmManager alarmManager=(AlarmManager)getSystemService(ALARM_SERVICE);
-                            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_FIFTEEN_MINUTES,pendingIntent);
-
 
 /*
                             Calendar calendar =Calendar.getInstance();
@@ -210,6 +250,32 @@ public class CropEntry extends AppCompatActivity {
         );
     }
 
+
+    public void createNotificationChannel() {
+
+        // Create a notification manager object.
+        mNotificationManager =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        // Notification channels are only available in OREO and higher.
+        // So, add a check on SDK version.
+        if (android.os.Build.VERSION.SDK_INT >=
+                android.os.Build.VERSION_CODES.O) {
+
+            // Create the NotificationChannel with all the parameters.
+            NotificationChannel notificationChannel = new NotificationChannel
+                    (PRIMARY_CHANNEL_ID,
+                            "Reminder notification",
+                            NotificationManager.IMPORTANCE_HIGH);
+
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.RED);
+            notificationChannel.enableVibration(true);
+            notificationChannel.setDescription("Notifies before deadline" +
+                    "Time for next pesticide cycle");
+            mNotificationManager.createNotificationChannel(notificationChannel);
+        }
+    }
 
     public void viewAll() {
         btnviewAll.setOnClickListener(
