@@ -21,6 +21,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
 import java.util.Random;
@@ -44,33 +45,55 @@ public class AlarmReceiver extends BroadcastReceiver {
         mNotificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
 
+        Bundle bundle= intent.getExtras();
+        String msg=bundle.getString("crop","something");
         // Deliver the notification.
-        deliverNotification(context);
+        deliverNotification(context,msg);
     }
 
 
 
-    private void deliverNotification(Context context) {
+    private void deliverNotification(Context context ,String aa) {
         // Create the content intent for the notification, which launches
         // this activity
         Intent contentIntent = new Intent(context, MainActivity.class);
-
         PendingIntent contentPendingIntent = PendingIntent.getActivity
                 (context, NOTIFICATION_ID, contentIntent, PendingIntent
                         .FLAG_UPDATE_CURRENT);
 
+        //Intent broadcastIntent = new Intent(context, ActionNotification.class);
+      //  broadcastIntent.putExtra("toastmsg","Thanks for Checking notification");
+//        PendingIntent broadcastPendingIntent = PendingIntent.getActivity
+//                (context, NOTIFICATION_ID, broadcastIntent, PendingIntent
+//                        .FLAG_UPDATE_CURRENT);
+
+
+        //SHOW BUTTON
+        Intent showintent=new Intent(context,viewall.class);
+        showintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent showPendingIntent=PendingIntent.getActivity(context,NOTIFICATION_ID,showintent,PendingIntent.FLAG_ONE_SHOT);
+
+        //DONE BUTTON
+        Intent doneintent=new Intent(context,CancelAlarm.class);
+        doneintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent donePendingIntent=PendingIntent.getActivity(context,NOTIFICATION_ID,showintent,PendingIntent.FLAG_ONE_SHOT);
+
+
         // Build the notification
 
-        String[] quotes={"Pad le beta","Soo mattt , Uth First lecture ko jaa !!!","Get over those Koren Guys !!"," Don't Stalk Your Juniors : )","Koi Baat nahi Madhura ..."};
+        String[] quotes={"Time for pesticide cycle","Get up and go to field"};
 
         String msg= quotes[new Random().nextInt(quotes.length)];
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder
                 (context, PRIMARY_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_background)
-                .setContentTitle("Heyy MADHURA !!!")
-                .setContentText(msg)
+                .setContentTitle("Heyy Buddy !!!")
+                .setContentText(aa)
                 .setContentIntent(contentPendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .addAction(R.drawable.ic_action_name,"Done",donePendingIntent)
+                .addAction(R.drawable.ic_action_name,"Show",showPendingIntent)
                 .setAutoCancel(true)
                 .setDefaults(NotificationCompat.DEFAULT_ALL);
 

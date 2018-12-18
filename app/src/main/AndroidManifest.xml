@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.snehal.cards">
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_logo2"
@@ -10,10 +9,12 @@
         android:roundIcon="@mipmap/ic_logo2_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-       <!-- <activity android:name=".SplashScreen">-->
 
-           <activity android:name=".BottomNavActivity">
-          <!--  <activity android:name=".NewInflaterActivity">-->
+        <!-- <activity android:name=".SplashScreen"> -->
+
+        <activity android:name=".BottomNavActivity">
+
+            <!-- <activity android:name=".NewInflaterActivity"> -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,16 +27,21 @@
             android:name=".ScrollingActivity"
             android:label="@string/title_activity_scrolling" />
         <activity android:name=".CropEntry" />
-       <!-- <activity
+        <!--
+            <activity
             android:name=".BottomNavActivity"
-            android:label="@string/title_activity_bottom_nav" />-->
-       <!-- <activity android:name=".NewInflaterActivity" />-->
-        <activity android:name=".viewall"></activity>
+            android:label="@string/title_activity_bottom_nav" />
+        -->
+        <!-- <activity android:name=".NewInflaterActivity" /> -->
+        <activity android:name=".viewall" />
 
         <receiver
             android:name=".AlarmReceiver"
             android:enabled="true"
-            android:exported="false"/>
+            android:exported="false" />
+
+        <!-- <receiver android:name=".ActionNotification"/> -->
+        <activity android:name=".DoneActivity"></activity>
     </application>
 
 </manifest>

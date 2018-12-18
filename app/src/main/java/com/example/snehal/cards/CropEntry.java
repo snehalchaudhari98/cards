@@ -7,6 +7,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -14,22 +15,31 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+
+import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 
 public class CropEntry extends AppCompatActivity {
-
+    Cursor c=null;
     private NotificationUtil mNotificationUtils;
     DatabaseHelper myDb;
     EditText sugarcaneSowingDate,sugarcaneSowingArea;
     Button sugarcaneEnter,btnviewAll;
 
-    private static final int NOTIFICATION_ID = 0;
+    private static int REQUEST=1;
+
+     static final int NOTIFICATION_ID = 0;
     // Notification channel ID.
     private static final String PRIMARY_CHANNEL_ID =
             "primary_notification_channel";
@@ -134,7 +144,8 @@ public class CropEntry extends AppCompatActivity {
 
 
 
-                        boolean isInserted = myDb.insertData(sugarcaneSowingDate.getText().toString(),sugarcaneSowingArea.getText().toString());
+                         boolean isInserted = myDb.insertData(sugarcaneSowingDate.getText().toString(),sugarcaneSowingArea.getText().toString());
+                       String sowDate=sugarcaneSowingDate.getText().toString();
                         sugarcaneSowingArea.setText("");
                         sugarcaneSowingDate.setText("");
 
@@ -144,8 +155,80 @@ public class CropEntry extends AppCompatActivity {
                         {
                             Toast.makeText(CropEntry.this, "Data Inserted", Toast.LENGTH_LONG).show();
 
+                            Calendar p2 = Calendar.getInstance();
+                            Calendar p1 =Calendar.getInstance();
+                            long noOfDays=0;
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-                            mNotificationManager = (NotificationManager)
+                            try {
+                                p1.setTime(sdf.parse(String.valueOf(new Date())));
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+
+
+                            try {
+                                p2.setTime(sdf.parse(sowDate));
+
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+
+
+
+
+                            int addDeadline=0;
+                            long m1=p1.getTimeInMillis();
+                            long m2=p2.getTimeInMillis();
+                            Date resultDate1=new Date(m1);
+                            Date resultDate2=new Date(m2);
+
+
+                            Log.d("Today's DATE ::", sdf.format(resultDate1));
+
+                            Log.d("Sowing Date's DATE ::", sdf.format(resultDate2));
+
+                            noOfDays=(m1-m2)/(24 * 60 * 60000);
+                            Log.d("Date difference", String.valueOf(noOfDays));
+
+
+
+                            DataBaseHelper2 myDbHelper = new DataBaseHelper2(CropEntry.this);
+                            try {
+                                myDbHelper.createDataBase();
+                            } catch (IOException ioe) {
+                                throw new Error("Unable to create database");
+                            }
+                            myDbHelper.openDataBase();
+//                    Toast.makeText(viewall.this, "Successfully Imported", Toast.LENGTH_SHORT).show();
+
+                            c = myDbHelper.query("SugarCane", null, null, null, null, null, null);
+                            if (c.moveToFirst()) {
+                                do {
+
+                                    Log.i("LISTDATA", "Diff" + c.getString(0) + "\n" +
+                                            "no_of_days_real " + noOfDays + "\n" );
+
+                                    if(noOfDays > c.getInt(0)) {
+                                        continue;
+
+                                    }else{
+
+                                        addDeadline=  c.getInt(0) - (int)(noOfDays-4);
+
+                                        break;
+                                    }
+
+
+                                } while (c.moveToNext());
+
+
+                            }
+
+                            callAlarm(addDeadline, String.valueOf(sdf.format(resultDate2)));
+
+
+                           /* mNotificationManager = (NotificationManager)
                                     getSystemService(NOTIFICATION_SERVICE);
 
                             //ToggleButton alarmToggle = findViewById(R.id.alarmToggle);
@@ -165,6 +248,11 @@ public class CropEntry extends AppCompatActivity {
                             final AlarmManager alarmManager = (AlarmManager) getSystemService
                                     (ALARM_SERVICE);
 
+
+
+
+
+
                             // Set the click listener for the toggle button.
                                                // long repeatInterval = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
                                                 long repeatInterval = 60*1000*4;
@@ -180,7 +268,7 @@ public class CropEntry extends AppCompatActivity {
                                                                     triggerTime, repeatInterval,
                                                                     notifyPendingIntent);
                                                 }
-                                      createNotificationChannel();
+                                      createNotificationChannel();*/
 
 
                             /*Cursor res = myDb.getAllData();
@@ -248,6 +336,70 @@ public class CropEntry extends AppCompatActivity {
                     }
                 }
         );
+    }
+
+    private void callAlarm(int addDeadline, String aa) {
+        mNotificationManager = (NotificationManager)
+                getSystemService(NOTIFICATION_SERVICE);
+
+        //ToggleButton alarmToggle = findViewById(R.id.alarmToggle);
+
+        // Set up the Notification Broadcast Intent.
+        Intent notifyIntent = new Intent(CropEntry.this, AlarmReceiver.class);
+        notifyIntent.putExtra("crop","For sugarcane with sowing date : "+aa);
+
+
+        boolean alarmUp = (PendingIntent.getBroadcast(CropEntry.this, NOTIFICATION_ID,
+                notifyIntent, PendingIntent.FLAG_NO_CREATE) != null);
+
+        //alarmToggle.setChecked(alarmUp);
+
+         PendingIntent notifyPendingIntent = PendingIntent.getBroadcast
+                (CropEntry.this, NOTIFICATION_ID, notifyIntent,
+                        FLAG_UPDATE_CURRENT);
+
+
+        //for cancelling alarm
+      /*  Intent cancellationIntent=new Intent(CropEntry.this,CancelAlarm.class);
+        cancellationIntent.putExtra("key",notifyPendingIntent);
+
+        final PendingIntent cancellationPendingIntent = PendingIntent.getBroadcast
+                (CropEntry.this, NOTIFICATION_ID, cancellationIntent,
+                        FLAG_UPDATE_CURRENT);*/
+
+
+        final AlarmManager alarmManager = (AlarmManager) getSystemService
+                (ALARM_SERVICE);
+
+
+        // Set the click listener for the toggle button.
+        // long repeatInterval = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
+        long repeatInterval = 60*1000*2;
+       // long repeatInterval = AlarmManager.INTERVAL_DAY;
+
+        long triggerTime = (SystemClock.elapsedRealtime() - (addDeadline*24*60*60*1000))
+                + repeatInterval;
+
+       // long cancelTime = (SystemClock.elapsedRealtime() + ((addDeadline+4)*24*60*60*1000));
+
+        // If the Toggle is turned on, set the repeating alarm with
+        // a 15 minute interval.
+        if (alarmManager != null) {
+            alarmManager.setInexactRepeating
+                    (AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                            triggerTime, repeatInterval,
+                            notifyPendingIntent);
+
+
+            triggerTime = (SystemClock.elapsedRealtime() + ((addDeadline+4)*24*60*60*1000));
+            notifyPendingIntent=PendingIntent.getService(CropEntry.this,NOTIFICATION_ID, notifyIntent,
+                    0);
+            AlarmManager alarmManagerstop=(AlarmManager)getSystemService(ALARM_SERVICE);
+            alarmManagerstop.cancel(notifyPendingIntent);
+           }
+
+        createNotificationChannel();
+
     }
 
 
