@@ -33,7 +33,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private NotificationManager mNotificationManager;
     // Notification ID.
-    private static final int NOTIFICATION_ID = 0;
+   // private static final int NOTIFICATION_ID = 0;
     // Notification channel ID.
     private static final String PRIMARY_CHANNEL_ID =
             "primary_notification_channel";
@@ -47,18 +47,20 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         Bundle bundle= intent.getExtras();
         String msg=bundle.getString("crop","something");
+        int notify_ID=bundle.getInt("notification_ID");
+
         // Deliver the notification.
-        deliverNotification(context,msg);
+        deliverNotification(context,msg,notify_ID);
     }
 
 
 
-    private void deliverNotification(Context context ,String aa) {
+    private void deliverNotification(Context context ,String aa,int n_ID) {
         // Create the content intent for the notification, which launches
         // this activity
         Intent contentIntent = new Intent(context, MainActivity.class);
         PendingIntent contentPendingIntent = PendingIntent.getActivity
-                (context, NOTIFICATION_ID, contentIntent, PendingIntent
+                (context, n_ID, contentIntent, PendingIntent
                         .FLAG_UPDATE_CURRENT);
 
         //Intent broadcastIntent = new Intent(context, ActionNotification.class);
@@ -71,12 +73,12 @@ public class AlarmReceiver extends BroadcastReceiver {
         //SHOW BUTTON
         Intent showintent=new Intent(context,viewall.class);
         showintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent showPendingIntent=PendingIntent.getActivity(context,NOTIFICATION_ID,showintent,PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent showPendingIntent=PendingIntent.getActivity(context,n_ID,showintent,PendingIntent.FLAG_ONE_SHOT);
 
         //DONE BUTTON
         Intent doneintent=new Intent(context,CancelAlarm.class);
         doneintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent donePendingIntent=PendingIntent.getActivity(context,NOTIFICATION_ID,showintent,PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent donePendingIntent=PendingIntent.getActivity(context,n_ID,showintent,PendingIntent.FLAG_ONE_SHOT);
 
 
         // Build the notification
@@ -98,6 +100,6 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .setDefaults(NotificationCompat.DEFAULT_ALL);
 
         // Deliver the notification
-        mNotificationManager.notify(NOTIFICATION_ID, builder.build());
+        mNotificationManager.notify(n_ID, builder.build());
     }
 }

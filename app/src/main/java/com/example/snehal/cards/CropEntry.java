@@ -25,21 +25,28 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 
 public class CropEntry extends AppCompatActivity {
     Cursor c=null;
+    Cursor deadlineDiff=null;
+
     private NotificationUtil mNotificationUtils;
     DatabaseHelper myDb;
     EditText sugarcaneSowingDate,sugarcaneSowingArea;
     Button sugarcaneEnter,btnviewAll;
+    int lp=0;
+    final int totalDeadline=4;
 
     private static int REQUEST=1;
 
-     static final int NOTIFICATION_ID = 0;
+     static int NOTIFICATION_ID = 0;
     // Notification channel ID.
     private static final String PRIMARY_CHANNEL_ID =
             "primary_notification_channel";
@@ -153,6 +160,7 @@ public class CropEntry extends AppCompatActivity {
 
                         if(isInserted ==true)
                         {
+                            int[] deadlineArray = new int[0];
                             Toast.makeText(CropEntry.this, "Data Inserted", Toast.LENGTH_LONG).show();
 
                             Calendar p2 = Calendar.getInstance();
@@ -203,9 +211,24 @@ public class CropEntry extends AppCompatActivity {
 //                    Toast.makeText(viewall.this, "Successfully Imported", Toast.LENGTH_SHORT).show();
 
                             c = myDbHelper.query("SugarCane", null, null, null, null, null, null);
+
+
+                            deadlineDiff = myDbHelper.query("SugarCane", null, null, null, null, null, null);
+                            int k=0;
+                            if (deadlineDiff.moveToFirst()) {
+                                deadlineArray=new int[deadlineDiff.getCount()];
+                                do {
+                                    deadlineArray[k]=deadlineDiff.getInt(0);
+                                } while (deadlineDiff.moveToNext());
+
+                                Log.i("Deadline array", "all deadline" + Arrays.toString(deadlineArray));
+                            }
+
+
+                            lp=0;
                             if (c.moveToFirst()) {
                                 do {
-
+                                    lp+=1;
                                     Log.i("LISTDATA", "Diff" + c.getString(0) + "\n" +
                                             "no_of_days_real " + noOfDays + "\n" );
 
@@ -225,7 +248,8 @@ public class CropEntry extends AppCompatActivity {
 
                             }
 
-                            callAlarm(addDeadline, String.valueOf(sdf.format(resultDate2)));
+                            //startdeadline,all deadline array , current position on deadline table ,sowing date
+                            callAlarm(addDeadline,deadlineArray,lp, String.valueOf(sdf.format(resultDate2)));
 
 
                            /* mNotificationManager = (NotificationManager)
@@ -338,25 +362,29 @@ public class CropEntry extends AppCompatActivity {
         );
     }
 
-    private void callAlarm(int addDeadline, String aa) {
+    private void callAlarm(int addDeadline,int[] DeadlineArr,int deadlineNo,String aa) {
+        long triggerTime;
         mNotificationManager = (NotificationManager)
                 getSystemService(NOTIFICATION_SERVICE);
 
         //ToggleButton alarmToggle = findViewById(R.id.alarmToggle);
-
+//wc
         // Set up the Notification Broadcast Intent.
-        Intent notifyIntent = new Intent(CropEntry.this, AlarmReceiver.class);
-        notifyIntent.putExtra("crop","For sugarcane with sowing date : "+aa);
+      //  Intent notifyIntent = new Intent(CropEntry.this, AlarmReceiver.class);
+        //notifyIntent.putExtra("crop","For deadline "+deadlineNo+"for sugarcane with sowing date : "+aa);
 
-
-        boolean alarmUp = (PendingIntent.getBroadcast(CropEntry.this, NOTIFICATION_ID,
-                notifyIntent, PendingIntent.FLAG_NO_CREATE) != null);
+//wc
+       // boolean alarmUp = (PendingIntent.getBroadcast(CropEntry.this, NOTIFICATION_ID,
+         //       notifyIntent, PendingIntent.FLAG_NO_CREATE) != null);
 
         //alarmToggle.setChecked(alarmUp);
 
-         PendingIntent notifyPendingIntent = PendingIntent.getBroadcast
-                (CropEntry.this, NOTIFICATION_ID, notifyIntent,
-                        FLAG_UPDATE_CURRENT);
+        List<PendingIntent> notifyPendingIntent = new ArrayList<PendingIntent>();
+
+//wc
+        // PendingIntent notifyPendingIntent = PendingIntent.getBroadcast
+          //      (CropEntry.this, NOTIFICATION_ID, notifyIntent,
+                      //  FLAG_UPDATE_CURRENT);
 
 
         //for cancelling alarm
@@ -368,8 +396,9 @@ public class CropEntry extends AppCompatActivity {
                         FLAG_UPDATE_CURRENT);*/
 
 
-        final AlarmManager alarmManager = (AlarmManager) getSystemService
-                (ALARM_SERVICE);
+      //WC
+       // final AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        final AlarmManager[] alarmManager=new AlarmManager[DeadlineArr.length-deadlineNo];
 
 
         // Set the click listener for the toggle button.
@@ -377,28 +406,55 @@ public class CropEntry extends AppCompatActivity {
         long repeatInterval = 60*1000*2;
        // long repeatInterval = AlarmManager.INTERVAL_DAY;
 
-        long triggerTime = (SystemClock.elapsedRealtime() - (addDeadline*24*60*60*1000))
-                + repeatInterval;
 
-       // long cancelTime = (SystemClock.elapsedRealtime() + ((addDeadline+4)*24*60*60*1000));
+        for(int i=deadlineNo;i<=DeadlineArr.length;i++) {
 
-        // If the Toggle is turned on, set the repeating alarm with
-        // a 15 minute interval.
-        if (alarmManager != null) {
-            alarmManager.setInexactRepeating
-                    (AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                            triggerTime, repeatInterval,
-                            notifyPendingIntent);
+            Intent notifyIntent = new Intent(CropEntry.this, AlarmReceiver.class);
+            PendingIntent pi=PendingIntent.getBroadcast(CropEntry.this, NOTIFICATION_ID ++, notifyIntent,
+                    FLAG_UPDATE_CURRENT);
+
+            notifyIntent.putExtra("crop","For deadline "+deadlineNo+"for sugarcane with sowing date : "+aa);
+            notifyIntent.putExtra("notification_ID", NOTIFICATION_ID);
 
 
-            triggerTime = (SystemClock.elapsedRealtime() + ((addDeadline+4)*24*60*60*1000));
-            notifyPendingIntent=PendingIntent.getService(CropEntry.this,NOTIFICATION_ID, notifyIntent,
-                    0);
-            AlarmManager alarmManagerstop=(AlarmManager)getSystemService(ALARM_SERVICE);
-            alarmManagerstop.cancel(notifyPendingIntent);
-           }
+            alarmManager[i] = (AlarmManager) getSystemService(ALARM_SERVICE);
 
-        createNotificationChannel();
+
+            if(i==deadlineNo){
+                triggerTime = (SystemClock.elapsedRealtime() + (addDeadline * 24 * 60 * 60 * 1000))
+                        + repeatInterval;
+            }else {
+                triggerTime = (SystemClock.elapsedRealtime() + ((addDeadline+(DeadlineArr[lp+1]-DeadlineArr[lp])) * 24 * 60 * 60 * 1000))
+                        + repeatInterval;
+            }
+
+            // long cancelTime = (SystemClock.elapsedRealtime() + ((addDeadline+4)*24*60*60*1000));
+
+            // If the Toggle is turned on, set the repeating alarm with
+            // a 15 minute interval.
+            if (alarmManager[i] != null) {
+                alarmManager[i].setInexactRepeating
+                        (AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                                triggerTime, repeatInterval,
+                                pi);
+
+                notifyPendingIntent.add(pi);
+            }
+
+            createNotificationChannel();
+        }
+
+
+
+
+
+        if(notifyPendingIntent.size()>0){
+            for(int i=0; i<notifyPendingIntent.size(); i++){
+                alarmManager[i].cancel(notifyPendingIntent.get(i));
+            }
+            notifyPendingIntent.clear();
+        }
+
 
     }
 
